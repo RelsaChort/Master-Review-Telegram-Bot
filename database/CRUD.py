@@ -52,24 +52,22 @@ async def create_master_profile(
         await session.refresh(profile)
         return profile
 
-async def get_published_masters(session: AsyncSession):
-    result = await session.execute(select(Master).where(Master.is_published == True))
-    return result.scalars().all
-
 async def published_master(session: AsyncSession, user_id: int):
     profile = await session.get(Master, user_id)
     if profile:
         profile.is_published = True
         await session.commit()
 
-async def show_master_profile(session: AsyncSession, user_id: int):
+async def show_master_profile(session: AsyncSession, user_id: int, user: int):
     stmt = select(Master).where(Master.user_id == user_id)
     result = await session.execute(stmt)
     profile = result.scalar_one_or_none()
-    
-    if profile:  #and profile.is_published
+    if not profile:
+        return 'Анкета не найдена'
+    if profile.is_published or profile.user_id == user:  #and profile.is_published
         lines = []
         fields = [
+            ("ID", profile.user_id),
             ("Имя", profile.name),
             ("Рейтинг", profile.rating),
             ("Опыт", profile.experience),
@@ -81,8 +79,8 @@ async def show_master_profile(session: AsyncSession, user_id: int):
             if value and str(value).strip():
                 lines.append(f'{label}: {value}')
             
-        return '\n'.join(lines) if lines else 'Анкета не заполнена'
-    return False
+        return '\n'.join(lines)
+    return "Профиль не опубликован."
     
 async def get_user_id_by_tg_id(session, tg_id: int) -> int | None:
     stmt = select(User.id).where(User.tg_id == tg_id)

@@ -16,7 +16,7 @@ async def give_my_profile(msg: types.Message):
         if user_id is None:
             await msg.answer("Ошибка: вы не зарегистрированы.")
             return
-        my_profile = await show_master_profile(session, user_id)
+        my_profile = await show_master_profile(session, user_id, user_id)
         if my_profile:
             await msg.answer(my_profile)
         else:

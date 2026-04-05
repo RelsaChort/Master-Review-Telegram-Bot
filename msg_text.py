@@ -1,0 +1,5 @@
+back_to_menu = "Вернуться в главное меню"
+create_master_profile = "Создать анкету мастера"
+find_master = "Найти мастера"
+my_profile = "Моя анкета"
+published = "Опубликовать"
