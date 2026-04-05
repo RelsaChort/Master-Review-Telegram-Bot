@@ -69,7 +69,7 @@ async def set_description(msg: Message, state: FSMContext):
     async with async_session_maker() as session:
         user_id = await get_user_id_by_tg_id(session, tg_id)
         await create_master_profile(session, user_id, name, xp, g_g, t_g, description)
-        profile = await show_master_profile(session, user_id)
+        profile = await show_master_profile(session, user_id, user_id)
         
     await msg.reply(f'Вот ваша анкета:\n{profile}\nОпубликовать?', reply_markup=get_after_rewrite_profile_keyboard())
     
